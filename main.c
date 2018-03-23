@@ -12,7 +12,7 @@ typedef struct _image {
     // 1 -> g
     // 2 -> b
     unsigned short int pixel[512][512][3];
-    unsigned int w;//vai ter que arrumar esses nomes escrotos
+    unsigned int w;
     unsigned int h;
 } Image;
 
@@ -187,12 +187,6 @@ int pixel_igual(Pixel p1, Pixel p2) {
 }
 
 Image escala_de_cinza(Image img) {
-    /*for (unsigned int i = 0; i < img.h; ++i) {
-        for (unsigned int j = 0; j < img.w; ++j) {
-            print("%u", img.pixel[i][j][0] + img.pixel[i][j][1] + img.pixel[i][j][2]);
-        }
-    }*/
-
     for (unsigned int i = 0; i < img.h; ++i) {
         for (unsigned int j = 0; j < img.w; ++j) {
             int media = img.pixel[i][j][0] +
@@ -213,22 +207,12 @@ void blur(unsigned int h, unsigned short int pixel[512][512][3], int T, unsigned
         for (unsigned int j = 0; j < w; ++j) {
             Pixel media = {0, 0, 0};
 
-            //int menor_h = (h - 1 > i + T/2) ? i + T/2 : h - 1;//Tirar esse ternario fdp e colocar em outra funcao
-            //int min_w = (w - 1 > j + T/2) ? j + T/2 : w - 1;//Tirar esse ternario fdp e colocar em outra fun
-            /*for(int x = (0 > i - T/2 ? 0 : i - T/2); x <= menor_h; ++x) {//Tirar esse ternario fdp
-                for(int y = (0 > j - T/2 ? 0 : j - T/2); y <= min_w; ++y) {
-                    media.r += pixel[x][y][0];
-                    media.g += pixel[x][y][1];
-                    media.b += pixel[x][y][2];
-                }
-            }*/
-
             int maior_h = min(i + T/2, h - 1);
             int menor_h = max(0, i - T/2);
             int maior_w = min(j + T/2, w - 1);
             int menor_w = max(0, j - T/2);
 
-            for(int x = menor_h ; x <= maior_h; ++x) {//Tirar esse ternario fdp
+            for(int x = menor_h ; x <= maior_h; ++x) {
                 for(int y = menor_w ; y <= maior_w ; ++y) {
                     media.r += pixel[x][y][0];
                     media.g += pixel[x][y][1];
@@ -236,7 +220,6 @@ void blur(unsigned int h, unsigned short int pixel[512][512][3], int T, unsigned
                 }
             }
 
-            // printf("%u", media.r)
             media.r /= T * T;
             media.g /= T * T;
             media.b /= T * T;
@@ -250,7 +233,6 @@ void blur(unsigned int h, unsigned short int pixel[512][512][3], int T, unsigned
 
 Image rotacionar90direita(Image img) {
     Image rotacionada;
-  //  printf("alguma coisa\n");
     rotacionada.w = img.h;
     rotacionada.h = img.w;
 
@@ -276,14 +258,14 @@ void inverter_cores(unsigned short int pixel[512][512][3],
     }
 }//fim do metodo inverter cores
 
-Image cortar_imagem(Image img, int x, int y, int w, int h) {
+Image cortar_imagem(Image img, int x, int y, int wCortado, int hCortado) {
     Image cortada;
 
-    cortada.w = w;
-    cortada.h = h;
+    cortada.w = wCortado;
+    cortada.h = hCortado;
 
-    for(int i = 0; i < h; ++i) {
-        for(int j = 0; j < w; ++j) {
+    for(int i = 0; i < hCortado; ++i) {
+        for(int j = 0; j < wCortado; ++j) {
             cortada.pixel[i][j][0] = img.pixel[i + y][j + x][0];
             cortada.pixel[i][j][1] = img.pixel[i + y][j + x][1];
             cortada.pixel[i][j][2] = img.pixel[i + y][j + x][2];
