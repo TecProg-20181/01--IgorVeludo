@@ -16,6 +16,7 @@ typedef struct _image {
     unsigned int h;
 } Image;
 
+int min(int a, int b);
 
 int max(int a, int b);
 
@@ -52,7 +53,7 @@ int main() {
 
         }
     }
-
+    //printf("PC1\n");
     int n_opcoes;
     scanf("%d", &n_opcoes);
 
@@ -212,10 +213,23 @@ void blur(unsigned int h, unsigned short int pixel[512][512][3], int T, unsigned
         for (unsigned int j = 0; j < w; ++j) {
             Pixel media = {0, 0, 0};
 
-            int menor_h = (h - 1 > i + T/2) ? i + T/2 : h - 1;
-            int min_w = (w - 1 > j + T/2) ? j + T/2 : w - 1;
-            for(int x = (0 > i - T/2 ? 0 : i - T/2); x <= menor_h; ++x) {
+            //int menor_h = (h - 1 > i + T/2) ? i + T/2 : h - 1;//Tirar esse ternario fdp e colocar em outra funcao
+            //int min_w = (w - 1 > j + T/2) ? j + T/2 : w - 1;//Tirar esse ternario fdp e colocar em outra fun
+            /*for(int x = (0 > i - T/2 ? 0 : i - T/2); x <= menor_h; ++x) {//Tirar esse ternario fdp
                 for(int y = (0 > j - T/2 ? 0 : j - T/2); y <= min_w; ++y) {
+                    media.r += pixel[x][y][0];
+                    media.g += pixel[x][y][1];
+                    media.b += pixel[x][y][2];
+                }
+            }*/
+
+            int maior_h = min(i + T/2, h - 1);
+            int menor_h = max(0, i - T/2);
+            int maior_w = min(j + T/2, w - 1);
+            int menor_w = max(0, j - T/2);
+
+            for(int x = menor_h ; x <= maior_h; ++x) {//Tirar esse ternario fdp
+                for(int y = menor_w ; y <= maior_w ; ++y) {
                     media.r += pixel[x][y][0];
                     media.g += pixel[x][y][1];
                     media.b += pixel[x][y][2];
@@ -236,7 +250,7 @@ void blur(unsigned int h, unsigned short int pixel[512][512][3], int T, unsigned
 
 Image rotacionar90direita(Image img) {
     Image rotacionada;
-
+  //  printf("alguma coisa\n");
     rotacionada.w = img.h;
     rotacionada.h = img.w;
 
@@ -278,3 +292,9 @@ Image cortar_imagem(Image img, int x, int y, int w, int h) {
 
     return cortada;
 }//fim do metodo cortar Imagem
+
+int min(int a, int b){
+  if(a < b)
+    return a;
+  return b;
+}
